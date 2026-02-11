@@ -4,6 +4,8 @@ import WhySection from './components/WhySection';
 import ModulesSection from './components/ModulesSection';
 import PilotRoadmap from './components/PilotRoadmap';
 import AiAssistant from './components/AiAssistant';
+import BenefitsSection from './components/BenefitsSection';
+import FAQSection from './components/FAQSection';
 import { Bot, MapPin, Mail, Phone, CheckCircle2 } from 'lucide-react';
 import { PRICING_TIERS } from './constants';
 
@@ -34,8 +36,10 @@ const App: React.FC = () => {
         <div id="modules">
             <ModulesSection />
         </div>
+
+        <BenefitsSection />
         
-        {/* Pricing Section (New) */}
+        {/* Pricing Section */}
         <section className="py-24 px-6 bg-[#020617] relative">
            <div className="container mx-auto">
              <div className="text-center mb-16">
@@ -74,37 +78,9 @@ const App: React.FC = () => {
            </div>
         </section>
 
-        <div className="py-24 px-6 bg-[#030712] border-y border-white/5">
-            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
-                    <h2 className="text-4xl font-bold">Intelligent Integration</h2>
-                    <p className="text-slate-400 text-lg">
-                        Traditional schools are isolated islands. Sunrise is a connected continent. 
-                        By integrating school data with after-school support, we eliminate redundancy and maximize potential.
-                    </p>
-                    <ul className="space-y-4">
-                        <li className="flex items-center gap-3 text-slate-300">
-                            <span className="w-2 h-2 bg-cyan-500 rounded-full"/> No travel time wasted (Safety & Energy)
-                        </li>
-                        <li className="flex items-center gap-3 text-slate-300">
-                            <span className="w-2 h-2 bg-cyan-500 rounded-full"/> Trusted faculty who know your child
-                        </li>
-                        <li className="flex items-center gap-3 text-slate-300">
-                            <span className="w-2 h-2 bg-cyan-500 rounded-full"/> Real-time progress tracking for parents
-                        </li>
-                    </ul>
-                </div>
-                <div className="relative h-96 rounded-2xl overflow-hidden glass-panel flex items-center justify-center border border-white/5">
-                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/20 to-purple-900/20" />
-                     <div className="text-center p-8 relative z-10">
-                        <h3 className="text-7xl font-bold text-white/10 select-none">EVOLUTION</h3>
-                        <p className="text-cyan-400 mt-2 font-mono">Traditional → Hybrid → Future</p>
-                     </div>
-                </div>
-            </div>
-        </div>
-
         <PilotRoadmap />
+        
+        <FAQSection />
       </div>
 
       <footer className="bg-black py-12 border-t border-white/10 text-center md:text-left">

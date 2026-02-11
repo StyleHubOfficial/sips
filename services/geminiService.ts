@@ -3,9 +3,31 @@ import { SYSTEM_INSTRUCTION } from "../constants";
 
 let aiClient: GoogleGenAI | null = null;
 
+// Robust API Key Loader based on user provided pattern
+const getApiKey = () => {
+  let apiKey = '';
+  
+  // 1. Check Vite (Standard for AI Studio / React apps)
+  if (typeof import.meta !== 'undefined' && (import.meta as any).env) {
+    apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY || (import.meta as any).env.VITE_API_KEY || (import.meta as any).env.API_KEY;
+  }
+  
+  // 2. Check Next.js (Standard for Next.js apps)
+  if (!apiKey && typeof process !== 'undefined' && process.env) {
+    apiKey = process.env.NEXT_PUBLIC_API_KEY;
+  }
+  
+  // 3. Check General Node/System (Fallback)
+  if (!apiKey && typeof process !== 'undefined' && process.env) {
+    apiKey = process.env.API_KEY || process.env.REACT_APP_API_KEY;
+  }
+  
+  return apiKey;
+};
+
 const getClient = () => {
   if (!aiClient) {
-    const apiKey = process.env.API_KEY;
+    const apiKey = getApiKey();
     if (!apiKey) {
         console.error("CRITICAL: API Key is missing. Please check VITE_GEMINI_API_KEY in Vercel settings.");
         throw new Error("API Key missing");
@@ -21,14 +43,10 @@ export const sendMessageToAI = async (
 ) => {
   const client = getClient();
   
-  // Primary: Gemini 3 (Reasoning/Complex)
-  // Note: If your key doesn't have access to Preview 3, this will fail and switch to fallback.
-  const primaryModel = "gemini-3-pro-preview";
-  
-  // Fallback: Gemini 2.0 Flash (High speed, very reliable)
-  // User reported "2.5" works, which likely refers to the 2.0 Flash series or 1.5 Pro. 
-  // 2.0 Flash is the best fallback for latency and availability.
-  const fallbackModel = "gemini-2.0-flash"; 
+  // Using 'gemini-flash-latest' as it refers to the latest stable Flash model (e.g., 2.0 Flash)
+  // This is highly stable, fast, and cost-effective, preventing "System connection errors" 
+  // often caused by overloaded Preview models.
+  const modelName = "gemini-flash-latest"; 
 
   const conversationHistory = history.map(h => ({
     role: h.role,
@@ -36,15 +54,10 @@ export const sendMessageToAI = async (
   }));
 
   try {
-    console.log(`Attempting with primary model: ${primaryModel}`);
     const chat = client.chats.create({
-      model: primaryModel,
+      model: modelName,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
-        // thinkingConfig is specific to Gen 3 models
-        thinkingConfig: {
-            thinkingBudget: 1024, 
-        },
         temperature: 0.7,
       },
       history: conversationHistory
@@ -54,27 +67,20 @@ export const sendMessageToAI = async (
     return result.text;
 
   } catch (error: any) {
-    console.warn(`Primary model (${primaryModel}) failed. Switching to fallback (${fallbackModel}).`);
-    console.warn("Primary Error Details:", error);
+    console.error("AI Service Error:", error);
     
+    // Fallback attempt if the generic alias fails, try specific 2.0 Flash
     try {
-      const fallbackChat = client.chats.create({
-        model: fallbackModel,
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-          // Removed thinkingConfig for Flash model as it can cause errors if unsupported
-          temperature: 0.7,
-        },
-        history: conversationHistory
-      });
-
-      const fallbackResult = await fallbackChat.sendMessage({ message });
-      return fallbackResult.text;
-
-    } catch (fallbackError: any) {
-      console.error("FATAL: Fallback model also failed.");
-      console.error("Fallback Error Details:", fallbackError);
-      throw new Error(`AI Service Unavailable: ${fallbackError.message || 'Unknown error'}`);
+        console.warn("Retrying with fallback model gemini-2.0-flash...");
+        const fallbackChat = client.chats.create({
+            model: "gemini-2.0-flash",
+            config: { systemInstruction: SYSTEM_INSTRUCTION },
+            history: conversationHistory
+        });
+        const fallbackResult = await fallbackChat.sendMessage({ message });
+        return fallbackResult.text;
+    } catch (fallbackError) {
+        throw new Error("System connection error. Please check your API key and try again.");
     }
   }
 };
