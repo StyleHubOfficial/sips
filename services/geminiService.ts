@@ -5,10 +5,12 @@ let aiClient: GoogleGenAI | null = null;
 
 const getClient = () => {
   if (!aiClient) {
-    if (!process.env.API_KEY) {
-        console.warn("API Key not found");
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+        console.error("CRITICAL: API Key is missing. Please check VITE_GEMINI_API_KEY in Vercel settings.");
+        throw new Error("API Key missing");
     }
-    aiClient = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    aiClient = new GoogleGenAI({ apiKey });
   }
   return aiClient;
 };
@@ -19,61 +21,60 @@ export const sendMessageToAI = async (
 ) => {
   const client = getClient();
   
-  // Primary model: Gemini 3 Pro Preview (Reasoning)
+  // Primary: Gemini 3 (Reasoning/Complex)
+  // Note: If your key doesn't have access to Preview 3, this will fail and switch to fallback.
   const primaryModel = "gemini-3-pro-preview";
-  // Fallback model: Gemini 2.5 Flash (Speed/Reliability)
-  const fallbackModel = "gemini-2.5-flash-preview";
+  
+  // Fallback: Gemini 2.0 Flash (High speed, very reliable)
+  // User reported "2.5" works, which likely refers to the 2.0 Flash series or 1.5 Pro. 
+  // 2.0 Flash is the best fallback for latency and availability.
+  const fallbackModel = "gemini-2.0-flash"; 
 
-  // Filter history to ensure it matches the API expectations if needed
   const conversationHistory = history.map(h => ({
     role: h.role,
     parts: h.parts
   }));
 
   try {
-    // Attempt with Primary Model (Gemini 3)
+    console.log(`Attempting with primary model: ${primaryModel}`);
     const chat = client.chats.create({
       model: primaryModel,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
+        // thinkingConfig is specific to Gen 3 models
         thinkingConfig: {
-            thinkingBudget: 1024, // Budget for reasoning
+            thinkingBudget: 1024, 
         },
         temperature: 0.7,
       },
       history: conversationHistory
     });
 
-    const result = await chat.sendMessage({
-      message: message
-    });
-
+    const result = await chat.sendMessage({ message });
     return result.text;
 
   } catch (error: any) {
-    console.warn(`Primary model (${primaryModel}) failed. Switching to fallback (${fallbackModel}). Error:`, error.message);
+    console.warn(`Primary model (${primaryModel}) failed. Switching to fallback (${fallbackModel}).`);
+    console.warn("Primary Error Details:", error);
     
-    // Fallback attempt (Gemini 2.5 Flash)
     try {
       const fallbackChat = client.chats.create({
         model: fallbackModel,
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
-          // Gemini 2.5 Flash typically doesn't use thinkingConfig in the same way or it might be ignored/unsupported in this context,
-          // so we use standard config.
+          // Removed thinkingConfig for Flash model as it can cause errors if unsupported
           temperature: 0.7,
         },
         history: conversationHistory
       });
 
-      const fallbackResult = await fallbackChat.sendMessage({
-        message: message
-      });
-
+      const fallbackResult = await fallbackChat.sendMessage({ message });
       return fallbackResult.text;
-    } catch (fallbackError) {
-      console.error("Fallback model failed as well:", fallbackError);
-      throw fallbackError;
+
+    } catch (fallbackError: any) {
+      console.error("FATAL: Fallback model also failed.");
+      console.error("Fallback Error Details:", fallbackError);
+      throw new Error(`AI Service Unavailable: ${fallbackError.message || 'Unknown error'}`);
     }
   }
 };

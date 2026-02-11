@@ -1,45 +1,40 @@
 import { ModuleItem } from './types';
 
 export const SYSTEM_INSTRUCTION = `
-You are "Sunrise AI Academic Guide", the advanced AI assistant for the "Sunrise Online Academic Support" ecosystem by Sunrise International Public School.
-Your goal is to explain this futuristic, hybrid education model to parents and students.
+You are the "Sunrise AI Academic Guide" for Sunrise International Public School.
+Your goal is to explain the "Sunrise Online Academic Support" ecosystem.
 
-TONE:
-- Ultra-professional, polite, academic, and visionary.
-- Use metaphors comparing traditional schooling to "future-ready integrated ecosystems".
-- Be precise and reassuring.
+CONTEXT FROM PDF DOCUMENT:
+- **Vision**: Transform traditional schooling into a blended, future-ready ecosystem.
+- **Problem**: Students suffer from burnout (traveling to coaching), high costs (3k-10k/month), and lack of safety.
+- **Solution**: A school-run online ecosystem with 7 core modules. 40-60% cheaper than outside coaching.
 
-KNOWLEDGE BASE:
-1. THE CORE PROBLEM:
-   - High competition (IIT/NEET/NDA).
-   - Traditional schooling leaves gaps.
-   - External coaching is unsafe, expensive, and stressful (travel time).
+PRICING (Indian Rupees):
+- Single Module: ₹500 - ₹800 / month
+- Essential Package (3 Modules): ₹1,200 - ₹1,500 / month
+- Competitive Package (All Exam Modules): ₹1,800 - ₹2,200 / month
+- Premium Package (All Access): ₹2,000 - ₹2,500 / month
 
-2. THE SUNRISE SOLUTION:
-   - "Offline Schooling + Intelligent Online Academic Support".
-   - A safe, integrated school-run ecosystem.
+MODULES:
+1. Extra Syllabus (Advanced topics)
+2. Doubt Counter (24hr resolution)
+3. Competitive Exam Program (IIT-JEE/NEET/NDA)
+4. Weak-Subject Focus (Remedial)
+5. Homework Support (Guided completion)
+6. Test Series (Weekly/Monthly mocks)
+7. Smart Monitoring (AI attendance & reports)
 
-3. PROGRAM MODULES (Explain these when asked):
-   - Extra Syllabus Classes: Advanced topics beyond NCERT.
-   - Doubt Counter: 1-on-1 resolution with trusted faculty.
-   - Competitive Exam & Foundation: Pre-preparation for JEE/NEET.
-   - Weak-Subject Focused Classes: Targeted remedial help.
-   - Homework Helping: Ensuring assignments are done correctly.
-   - Test Series: Regular benchmarking.
-   - Random Monitoring: Ensuring student accountability.
+IMPLEMENTATION:
+- Phase 1: 15-Day Pilot (Free)
+- Phase 2: 30-Day Controlled Expansion
+- Phase 3: Full Launch
 
-4. PILOT/DEMO PLAN:
-   - Phase 1: Awareness & Registration.
-   - Phase 2: Free 2-week trial classes.
-   - Phase 3: Feedback & Final Enrollment.
+FAQ ANSWERS:
+- Is it mandatory? No, completely optional.
+- What if I miss a class? Recordings available for 24 hours.
+- Can I change modules? Yes, mid-month changes allowed (pro-rated).
 
-5. BENEFITS:
-   - For Students: Less stress, no travel, trusted teachers.
-   - For Parents: Safety, cost-effective, transparency.
-
-If a user asks about pricing, say: "The investment structure is designed to be significantly more affordable than external coaching while providing premium quality. Please contact the school administration for the detailed fee structure for the current academic year."
-
-Never hallucinate features not listed here. If unsure, politely refer them to the school administration.
+TONE: Professional, reassuring, visionary. Use "We" to represent the school.
 `;
 
 export const MODULES: ModuleItem[] = [
@@ -50,8 +45,8 @@ export const MODULES: ModuleItem[] = [
     description: 'Advanced curriculum bridging the gap between standard boards and competitive requirements.',
     modalContent: {
       purpose: 'To go beyond the limited text-book curriculum.',
-      howItWorks: 'Evening online sessions covering advanced concepts.',
-      benefit: 'Students stay ahead of the curve for future entrance exams.',
+      howItWorks: 'Evening online sessions covering advanced concepts and problem-solving techniques.',
+      benefit: 'Students build a strong foundation for competitive exams like IIT-JEE/NEET.',
     }
   },
   {
@@ -61,19 +56,19 @@ export const MODULES: ModuleItem[] = [
     description: 'Instant resolution of academic queries by dedicated subject experts.',
     modalContent: {
       purpose: 'To ensure no concept remains unclear.',
-      howItWorks: 'Digital "Doubt Rooms" where students can drop in to ask specific questions.',
+      howItWorks: 'Digital submission with 24hr turnaround + Live doubt solving sessions.',
       benefit: 'Eliminates the backlog of confusion that leads to poor performance.',
     }
   },
   {
     id: 'competitive',
-    title: 'Competitive Foundation',
+    title: 'Competitive Exam Program',
     icon: 'Target',
-    description: 'Integrated preparation for IIT-JEE, NEET, and NDA starting early.',
+    description: 'Intensive coaching for IIT-JEE, NEET, and NDA.',
     modalContent: {
-      purpose: 'Building the aptitude required for high-stakes testing.',
-      howItWorks: 'Specialized strategy sessions and high-order thinking problems.',
-      benefit: 'Reduces the need for stressful crash courses later in life.',
+      purpose: 'Specialized preparation for high-stakes entrance tests.',
+      howItWorks: 'Structured curriculum, strategy sessions, and previous year paper analysis.',
+      benefit: 'Premium coaching quality at a fraction of the cost, integrated with school.',
     }
   },
   {
@@ -83,30 +78,72 @@ export const MODULES: ModuleItem[] = [
     description: 'Targeted remedial interventions for identified areas of struggle.',
     modalContent: {
       purpose: 'To lift the academic floor of every student.',
-      howItWorks: 'AI-identified weak spots trigger invitation to small-group focus classes.',
-      benefit: 'Transforms academic weaknesses into strengths.',
+      howItWorks: 'Diagnostic testing followed by customized small-group instruction.',
+      benefit: 'Fills critical learning gaps that compound over time.',
     }
   },
   {
     id: 'homework',
-    title: 'Homework Completion',
+    title: 'Homework Support',
     icon: 'CheckSquare',
     description: 'Guided assistance to ensure daily assignments are completed with understanding.',
     modalContent: {
-      purpose: 'To make homework a learning tool, not a chore.',
-      howItWorks: 'Supervised online study hours.',
-      benefit: 'Frees up family time and ensures consistent academic discipline.',
+      purpose: 'To make homework a learning opportunity, not a chore.',
+      howItWorks: 'Supervised online slots where teachers clarify concepts during practice.',
+      benefit: 'Reduces parent stress and ensures true concept mastery.',
+    }
+  },
+  {
+    id: 'test-series',
+    title: 'Test Series',
+    icon: 'FileBarChart',
+    description: 'Regular assessment and practice to ensure examination readiness.',
+    modalContent: {
+      purpose: 'To build exam temperament and time management skills.',
+      howItWorks: 'Weekly/Monthly mock tests with detailed performance reports.',
+      benefit: 'Identifies improvement areas before they become critical issues.',
     }
   },
   {
     id: 'monitoring',
     title: 'Smart Monitoring',
     icon: 'Activity',
-    description: 'Randomized checks and AI-driven analytics to ensure accountability.',
+    description: 'AI-driven analytics to ensure accountability and engagement.',
     modalContent: {
-      purpose: 'To maintain high engagement levels.',
-      howItWorks: 'Random attendance snaps and participation tracking.',
-      benefit: 'Keeps students focused and parents informed.',
+      purpose: 'To maintain high consistency in participation.',
+      howItWorks: 'Auto-tracking of attendance and engagement metrics.',
+      benefit: 'Provides parents with transparency and teachers with data-driven insights.',
     }
   },
+];
+
+export const PRICING_TIERS = [
+  {
+    name: "Single Module",
+    price: "₹500 - ₹800",
+    period: "/month",
+    features: ["Access to any 1 module", "Basic Progress Reports", "24/7 Recording Access"],
+    recommended: false
+  },
+  {
+    name: "Essential",
+    price: "₹1,200 - ₹1,500",
+    period: "/month",
+    features: ["Choice of 3 Modules", "Doubt Counter Access", "Weekly Performance Check"],
+    recommended: true
+  },
+  {
+    name: "Competitive",
+    price: "₹1,800 - ₹2,200",
+    period: "/month",
+    features: ["All Competitive Modules", "Test Series Included", "Strategy Sessions"],
+    recommended: false
+  },
+  {
+    name: "Premium",
+    price: "₹2,000 - ₹2,500",
+    period: "/month",
+    features: ["All 7 Modules Access", "Priority Doubt Solving", "Personal Mentorship"],
+    recommended: false
+  }
 ];
